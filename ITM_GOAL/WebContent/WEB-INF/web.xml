@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<web-app xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://java.sun.com/xml/ns/javaee" xsi:schemaLocation="http://java.sun.com/xml/ns/javaee http://java.sun.com/xml/ns/javaee/web-app_3_0.xsd" id="WebApp_ID" version="3.0">
+  <display-name>ITM_GOAL</display-name>
+  <welcome-file-list>
+    <welcome-file>index.html</welcome-file>
+    <welcome-file>index.htm</welcome-file>
+    <welcome-file>index.jsp</welcome-file>
+    <welcome-file>default.html</welcome-file>
+    <welcome-file>default.htm</welcome-file>
+    <welcome-file>default.jsp</welcome-file>
+  </welcome-file-list>
+  
+  <resource-ref>
+    <res-ref-name>user/Provider</res-ref-name>
+    <res-type>com.sap.security.um.user.UserProvider</res-type>
+  </resource-ref>
+
+<login-config>
+  <auth-method>FORM</auth-method>
+</login-config>
+<security-constraint>
+  <web-resource-collection>
+      <web-resource-name>all</web-resource-name>
+      <url-pattern>/*</url-pattern>
+  </web-resource-collection>
+  <auth-constraint>
+    <!-- Role Everyone will not be assignable -->
+    <role-name>Everyone</role-name>
+    </auth-constraint>
+</security-constraint>
+<security-role>
+  <description>All SAP HANA Cloud Platform users</description>
+  <role-name>Everyone</role-name>
+</security-role>
+
+	<servlet>
+		<servlet-name>jersey-servlet</servlet-name>
+		<servlet-class>
+                     com.sun.jersey.spi.container.servlet.ServletContainer
+                </servlet-class>
+		<init-param>
+		     <param-name>com.sun.jersey.config.property.packages</param-name>
+		     <param-value>com.sap.services</param-value>
+		</init-param>
+		<load-on-startup>1</load-on-startup>
+	</servlet>
+
+	<servlet-mapping>
+		<servlet-name>jersey-servlet</servlet-name>
+		<url-pattern>/srv/*</url-pattern>
+	</servlet-mapping>
+  
+  
+  <resource-ref>
+    <res-ref-name>SF_API</res-ref-name>
+    <res-type>com.sap.core.connectivity.api.http.HttpDestination</res-type>
+  </resource-ref>
+  <resource-ref>
+    <res-ref-name>connectivity/DestinationFactory</res-ref-name>
+    <res-type>com.sap.core.connectivity.api.DestinationFactory</res-type>
+  </resource-ref>
+  
+
+    <!-- Main sample servlet mapped to / so that the integration test harness can detect readiness (generic for all samples) -->
+<!--     <servlet>
+        <servlet-name>SFTest</servlet-name>
+        <servlet-class>com.sap.services.SFTest</servlet-class>
+    </servlet>
+    <servlet-mapping>
+        <servlet-name>SFTest</servlet-name> 
+        <url-pattern>/</url-pattern>
+    </servlet-mapping>    -->
+</web-app>
