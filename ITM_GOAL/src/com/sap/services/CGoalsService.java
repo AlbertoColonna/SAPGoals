@@ -199,7 +199,7 @@ public class CGoalsService extends HttpServlet{
 					element = factory.createElement("guid");	  
 					element.addTextNode(strGuid);	
 					oSF.getAny().add(element);	
-					
+					 
 					//Flag
 					element = factory.createElement("flag");	 
 					element.addTextNode("Public");	
