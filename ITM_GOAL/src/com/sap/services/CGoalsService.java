@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 import javax.annotation.PostConstruct;
 import javax.naming.InitialContext;
@@ -72,7 +73,7 @@ public class CGoalsService extends HttpServlet{
 		String start;
 		String due;
 		String status;
-		String userName;
+		String userName; 
 		
 		List<CGoal> lGoals = new ArrayList();
 		
@@ -192,8 +193,11 @@ public class CGoalsService extends HttpServlet{
 					oSF.getAny().add(element);	
 					
 					//GUID
+				    UUID guid = UUID.randomUUID();				
+				    
+				    String strGuid = guid.toString();
 					element = factory.createElement("guid");	  
-					element.addTextNode("134");	
+					element.addTextNode(strGuid);	
 					oSF.getAny().add(element);	
 					
 					//Flag
