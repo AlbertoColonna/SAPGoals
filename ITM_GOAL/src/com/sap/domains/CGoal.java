@@ -10,6 +10,11 @@ public class CGoal {
 	private String due;
 	private String status;
 	private String userName;
+	
+	public CGoal()
+	{
+		
+	}
     
     public CGoal(String goalId, String goalName, String goalStart, String goalDue, String goalStatus, String goalUserName)
     {
