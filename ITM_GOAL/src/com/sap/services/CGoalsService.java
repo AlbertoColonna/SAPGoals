@@ -56,7 +56,10 @@ public class CGoalsService extends HttpServlet{
 		
 		LOG.error("GET method");
 		
-		mConnector = new CConnectorService();		
+		
+		LOG.error("Test1");
+		mConnector = new CConnectorService();
+		LOG.error(request.getUserPrincipal().toString());
 		usrSrv = new CUserService(request.getUserPrincipal());    	      
    			
     }	
