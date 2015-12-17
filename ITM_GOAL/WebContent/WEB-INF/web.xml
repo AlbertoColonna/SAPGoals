@@ -33,6 +33,15 @@
   <role-name>Everyone</role-name>
 </security-role>
 
+	<filter>
+		<filter-name>CORSFilter</filter-name>
+		<filter-class>CORSFilter</filter-class>
+	</filter>
+	<filter-mapping>
+		<filter-name>CORSFilter</filter-name>
+		<url-pattern>/srv/*</url-pattern>
+	</filter-mapping>
+
 	<servlet>
 		<servlet-name>jersey-servlet</servlet-name>
 		<servlet-class>
