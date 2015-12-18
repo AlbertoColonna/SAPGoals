@@ -36,6 +36,7 @@ import com.sap.coe.sf.SFWebServiceFaultException_Exception;
 import com.sap.coe.sf.UpdateResult;
 import com.sap.coe.sf.UpsertResult;
 import com.sap.domains.CGoal;
+import com.sap.domains.CUser;
 import com.sap.util.CConst;
 import com.sap.util.CQueries;
 import com.sap.coe.sf.SFObject;
@@ -49,7 +50,7 @@ public class CGoalsService extends HttpServlet{
 	private CUserService usrSrv;
 	
     @Context
-    HttpServletRequest request;	
+    HttpServletRequest request;	 
 	
     @PostConstruct
     public void init() {
@@ -58,7 +59,7 @@ public class CGoalsService extends HttpServlet{
 		
 		mConnector = new CConnectorService();		
 		usrSrv = new CUserService(request.getUserPrincipal());    	      
-   			
+   			 
     }	
 	
 
@@ -66,7 +67,8 @@ public class CGoalsService extends HttpServlet{
 	
 	@GET
 	@Produces(MediaType.APPLICATION_JSON)	
-	public List<CGoal> getGoals()
+	//public List<CGoal> getGoals()
+	public Response getGoals()	
 	{
 		String id;
 		String name;
@@ -78,7 +80,7 @@ public class CGoalsService extends HttpServlet{
 		List<CGoal> lGoals = new ArrayList();
 		
 		userName = this.usrSrv.getUserId();
-		LOG.error("The User-ID is:" + userName);
+		//LOG.error("The User-ID is:" + userName);
 		
 		//Only for testing
 		userName = "D001684";
@@ -124,9 +126,11 @@ public class CGoalsService extends HttpServlet{
 	        	
 	        	lGoals.add(new CGoal(id,name,start,due,status,userName));
 	 
-	        }   			
+	        }   	
+	        
+			return Response.ok().entity(lGoals).build();	        
 			
-			return lGoals;
+			//return lGoals; 
 			
 		} catch (SFWebServiceFaultException_Exception e) {
 			// TODO Auto-generated catch block
@@ -253,7 +257,7 @@ public class CGoalsService extends HttpServlet{
 				LOG.error("Result:"+ir.getJobStatus());			
 				LOG.error("Result:"+ir.getMessage());					
 			}
-			else
+			else 
 			{
 				UpdateResult ur = mConnector.getAPI().update(CConst.GOAL_TABLE, lSF, null);			
 				LOG.error("Result:"+ur.getJobStatus());		
@@ -281,6 +285,22 @@ public class CGoalsService extends HttpServlet{
 		
 	    
     }	
+	
+	@GET
+	@Path("{user}")	
+	@Produces(MediaType.APPLICATION_JSON)	
+	public CUser getUser()
+	{
+		
+		String userName = this.usrSrv.getUserId();	
+		
+		userName = "D001684";				
+		
+		CUser user = new CUser(userName);		
+		
+		return user;
+		
+	}
 
 
 }

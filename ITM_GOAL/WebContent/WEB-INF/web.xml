@@ -10,10 +10,10 @@
     <welcome-file>default.jsp</welcome-file>
   </welcome-file-list>
   
-  <resource-ref>
+   <resource-ref>
     <res-ref-name>user/Provider</res-ref-name>
     <res-type>com.sap.security.um.user.UserProvider</res-type>
-  </resource-ref>
+  </resource-ref> 
 
 <login-config>
   <auth-method>FORM</auth-method>
@@ -32,6 +32,8 @@
   <description>All SAP HANA Cloud Platform users</description>
   <role-name>Everyone</role-name>
 </security-role>
+
+ 
 
 	<servlet>
 		<servlet-name>jersey-servlet</servlet-name>
@@ -59,6 +61,20 @@
     <res-ref-name>connectivity/DestinationFactory</res-ref-name>
     <res-type>com.sap.core.connectivity.api.DestinationFactory</res-type>
   </resource-ref>
+  
+  <context-param>
+    <param-name>com.sap.ui5.resource.ACCEPTED_ORIGINS</param-name>
+    <param-value>*</param-value>
+  </context-param>
+  
+  <filter>
+    <filter-name>accesscontrol</filter-name>
+    <filter-class>com.sap.filter.AccessControlFilter</filter-class>
+  </filter>
+  <filter-mapping>
+    <filter-name>accesscontrol</filter-name>
+    <url-pattern>/srv/*</url-pattern>
+  </filter-mapping>    
   
 
     <!-- Main sample servlet mapped to / so that the integration test harness can detect readiness (generic for all samples) -->
