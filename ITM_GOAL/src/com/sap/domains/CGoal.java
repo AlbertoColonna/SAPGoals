@@ -8,7 +8,7 @@ public class CGoal {
 	private String name;
 	private String start;
 	private String due;
-	private String status;
+	private String state;
 	private String userName;
 	
 	public CGoal()
@@ -16,13 +16,13 @@ public class CGoal {
 		
 	}
     
-    public CGoal(String goalId, String goalName, String goalStart, String goalDue, String goalStatus, String goalUserName)
+    public CGoal(String goalId, String goalName, String goalStart, String goalDue, String goalState, String goalUserName)
     {
     	this.setId(goalId);
     	this.setName(goalName);
     	this.setStart(goalStart);
     	this.setDue(goalDue);
-    	this.setStatus(goalStatus);
+    	this.setState(goalState);
     	this.setUserName(goalUserName);
     }
 
@@ -58,12 +58,12 @@ public class CGoal {
 		this.due = due;
 	}
 
-	public String getStatus() {
-		return status;
+	public String getState() {
+		return state;
 	}
 
-	public void setStatus(String status) {
-		this.status = status;
+	public void setState(String status) {
+		this.state = status;
 	}
 
 	public String getUserName() {

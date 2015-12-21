@@ -142,21 +142,24 @@ public class CGoalsService extends HttpServlet{
 	
 	@POST	
 	@Produces(MediaType.TEXT_PLAIN)
-    @Consumes({MediaType.APPLICATION_XML, MediaType.APPLICATION_JSON})	
+    @Consumes({MediaType.APPLICATION_JSON})	
     public Response postGoals( CGoal[] goals) {
 		
 		//String userName;
 		String output = "";
 		boolean insert = true;
 		String userId = "";
+		String strGuid = "";
 		
-		List<SFObject> lSF = new ArrayList<SFObject>();	
+		List<SFObject> lSFInsert = new ArrayList<SFObject>();	
+		List<SFObject> lSFUpdate = new ArrayList<SFObject>();			
 		
 		String userName = this.usrSrv.getUserId();
 		
 		//Only for testing
 		userName = "D001684";		
-				
+			
+        LOG.error("Test1");
 		
 		try {		
 			
@@ -164,10 +167,12 @@ public class CGoalsService extends HttpServlet{
 			
 			Element field;		
 	    	 
-	    	//name,start,due,status	    	
+	    	//name,start,due,status	   
+			
+	        LOG.error("Test2");			
 	    	 
 	        for(int i=0; i<oRes.getSfobject().size();i++) 
-	        {        	   	
+	        {        	   	     	
 	        	userId = oRes.getSfobject().get(i).getId();	    
 	        	LOG.error(userId);
 	        	break;
@@ -188,26 +193,37 @@ public class CGoalsService extends HttpServlet{
 				{
 					oSF.setId(goals[i].getId());
 					insert = false;
+					LOG.error(goals[i].getId());
 				}
 				else
 				{
+					insert = true;
+/*					LOG.error("Factory"+factory);
+					
 					//userName
 					element = factory.createElement("userName");	 
+					
+					LOG.error("Element"+element);	
+					LOG.error("UsrN"+goals[i].getUserName());
 					element.addTextNode(goals[i].getUserName());	
 					oSF.getAny().add(element);	
+					LOG.error("UserName"+element.getTextContent() + "");*/
 					
 					//GUID
 				    UUID guid = UUID.randomUUID();				
 				    
-				    String strGuid = guid.toString();
+				    strGuid = "";
+				    strGuid = guid.toString();
 					element = factory.createElement("guid");	  
 					element.addTextNode(strGuid);	
 					oSF.getAny().add(element);	
+					LOG.error("GUID:"+strGuid);
 					 
 					//Flag
 					element = factory.createElement("flag");	 
 					element.addTextNode("Public");	
 					oSF.getAny().add(element);		
+					LOG.error("Flag"+element.getTextContent());					
 					
 					//User-ID
 					
@@ -215,11 +231,13 @@ public class CGoalsService extends HttpServlet{
 					element = factory.createElement("userId");	 
 					element.addTextNode(userId);	
 					oSF.getAny().add(element);		
+					LOG.error("USER-ID"+element.getTextContent());							
 					
 					//Category
 					element = factory.createElement("category");	
 					element.addTextNode("Customer");
-					oSF.getAny().add(element);							
+					oSF.getAny().add(element);			
+					LOG.error("Category:"+element.getTextContent());							
 					
 				}
 
@@ -239,29 +257,44 @@ public class CGoalsService extends HttpServlet{
 				oSF.getAny().add(element);		
 					
 				//Status
-				element = factory.createElement("status");	
-				element.addTextNode(goals[i].getStatus());	
+				element = factory.createElement("state");	
+				element.addTextNode(goals[i].getState());	
 				oSF.getAny().add(element);		
 										
 				
-				LOG.error(goals[i].getId()+"/"+goals[i].getName()+"/"+goals[i].getStart()+"/"+goals[i].getDue()+"/"+goals[i].getStatus()+"/"+goals[i].getUserName()+"/")	;
-				
-				lSF.add(oSF);					
+				if(insert == true)
+				{
+					lSFInsert.add(oSF);
+				}
+				else
+				{
+					lSFUpdate.add(oSF);					
+				}
 				
 			}
 			
-			LOG.error("Update list:"+ lSF.size());
+			//LOG.error("Update list:"+ lSF.size());
 			if(insert == true)
 			{
-				UpsertResult ir = mConnector.getAPI().upsert(CConst.GOAL_TABLE, lSF, null);
+				UpsertResult ir = mConnector.getAPI().upsert(CConst.GOAL_TABLE, lSFInsert, null);
 				LOG.error("Result:"+ir.getJobStatus());			
-				LOG.error("Result:"+ir.getMessage());					
+				LOG.error("Result:"+ir.getMessage());	
+				
+				if(ir.getJobStatus().equals("ERROR") )
+				{
+					return Response.status(500).entity(output).build();						
+				}				
 			}
 			else 
 			{
-				UpdateResult ur = mConnector.getAPI().update(CConst.GOAL_TABLE, lSF, null);			
+				UpdateResult ur = mConnector.getAPI().update(CConst.GOAL_TABLE, lSFUpdate, null);			
 				LOG.error("Result:"+ur.getJobStatus());		
 				LOG.error("Err:"+ur.getMessage());
+				
+				if(ur.getJobStatus().equals("ERROR") )
+				{
+					return Response.status(500).entity(output).build();						
+				}
 			}
 
 			
@@ -270,18 +303,21 @@ public class CGoalsService extends HttpServlet{
 		// TODO Auto-generated catch block
 		LOG.error("Upsert error"); 
 		LOG.error("Exception:"+e.getMessage());
-		return null;
+		return Response.status(500).entity(e.getMessage()).build();		
 		
 	} catch (SOAPException e) {
 		// TODO Auto-generated catch block
 		LOG.error("SOAP Exception");
 		e.printStackTrace();
+		return Response.status(500).entity(e.getMessage()).build();	
 	}			
 	catch (Exception e){
 		LOG.error("Exc:"+e.getMessage());
+		e.printStackTrace();
+		return Response.status(500).entity(e.getMessage()).build();				
 	}
 			
-	return Response.status(200).entity(output).build(); 				
+		return Response.ok().entity("Hallooooo").build();	 				
 		
 	    
     }	
