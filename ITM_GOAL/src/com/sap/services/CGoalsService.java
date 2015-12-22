@@ -351,11 +351,12 @@ public class CGoalsService extends HttpServlet{
 		
 		JSONObject jo = new JSONObject();
 
-		String output   = "";
-        int noOfGoals   = 0;		
-        int noAchieved  = 0;
-        int noOnTrack   = 0;
-        int noOffTarget = 0;
+		String output   	 = "";
+        int noOfGoals   	 = 0;		
+        int noAchieved  	 = 0;
+        int noOnTrack   	 = 0;
+        int noOffTarget		 = 0;
+        int noLongerValid    = 0;
 		
 		String userName = this.usrSrv.getUserId();
 		
@@ -387,6 +388,10 @@ public class CGoalsService extends HttpServlet{
 	                {
 	                	noOffTarget++;
 	                }
+	                else if(field.getTextContent().equals(CConst.STATUS_NO_LONGER_VALID))
+	                {
+	                	noLongerValid++;
+	                }	                
 	            	
 	            }    
 	 
@@ -397,7 +402,8 @@ public class CGoalsService extends HttpServlet{
 			jo.put("count",    noOfGoals);		
 			jo.put("achieved", noAchieved);
 			jo.put("ontrack",  noAchieved);
-			jo.put("offtarget",noOffTarget);			
+			jo.put("offtarget",noOffTarget);		
+			jo.put("nolongervalid",noLongerValid);				
 			
 	
 		} catch (SFWebServiceFaultException_Exception e) {
