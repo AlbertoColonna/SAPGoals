@@ -26,6 +26,7 @@ import javax.xml.soap.SOAPElement;
 import javax.xml.soap.SOAPException;
 import javax.xml.soap.SOAPFactory;
 
+import org.json.simple.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
@@ -57,7 +58,10 @@ public class CGoalsService extends HttpServlet{
 		
 		LOG.error("GET method");
 		
-		mConnector = new CConnectorService();		
+		
+		LOG.error("Test1");
+		mConnector = new CConnectorService();
+		LOG.error(request.getUserPrincipal().toString());
 		usrSrv = new CUserService(request.getUserPrincipal());    	      
    			 
     }	
@@ -83,7 +87,7 @@ public class CGoalsService extends HttpServlet{
 		//LOG.error("The User-ID is:" + userName);
 		
 		//Only for testing
-		userName = "D001684";
+		//userName = "D001684";
 		
 		LOG.error("Query:"+CQueries.querySelectGoals + userName);
 		LOG.error("API:"+mConnector.getAPI());
@@ -157,7 +161,7 @@ public class CGoalsService extends HttpServlet{
 		String userName = this.usrSrv.getUserId();
 		
 		//Only for testing
-		userName = "D001684";		
+		//userName = "D001684";		
 			
         LOG.error("Test1");
 		
@@ -323,20 +327,95 @@ public class CGoalsService extends HttpServlet{
     }	
 	
 	@GET
-	@Path("{user}")	
+	@Path("user")	
 	@Produces(MediaType.APPLICATION_JSON)	
-	public CUser getUser()
+	public Response getUser()
 	{
 		
 		String userName = this.usrSrv.getUserId();	
 		
-		userName = "D001684";				
+		//userName = "D001684";				
 		
 		CUser user = new CUser(userName);		
 		
-		return user;
+		return Response.ok().entity(user).build();	 
 		
 	}
+	
+	
+	@GET
+	@Path("count")	
+	@Produces(MediaType.APPLICATION_JSON)	
+	public Response getNoOfGoals()
+	{
+		
+		JSONObject jo = new JSONObject();
+
+		String output   = "";
+        int noOfGoals   = 0;		
+        int noAchieved  = 0;
+        int noOnTrack   = 0;
+        int noOffTarget = 0;
+		
+		String userName = this.usrSrv.getUserId();
+		
+		//Only for testing
+		//userName = "D001684";		
+		
+		try {		
+			
+			QueryResult oRes = mConnector.getAPI().query(CQueries.querySelectNoOfGoals + "'" + userName + "'", CConnectorService.SF_DEFAULT_PARAM);	
+			
+			Element field;
+			
+	        for(int i=0; i<oRes.getSfobject().size();i++) 
+	        {        	         	
+	        	
+	        	for(int j=0; j<oRes.getSfobject().get(i).getAny().size();j++)
+	        	{
+	            	field = (Element) oRes.getSfobject().get(i).getAny().get(j);
+	            	
+	                if(field.getTextContent().equals(CConst.STATUS_ACHIEVED))
+	                {
+	                	noAchieved++;
+	                }
+	                else if(field.getTextContent().equals(CConst.STATUS_ON_TRACK))
+	                {
+	                	noOnTrack++;
+	                }
+	                else if(field.getTextContent().equals(CConst.STATUS_OFF_TARGET))
+	                {
+	                	noOffTarget++;
+	                }
+	            	
+	            }    
+	 
+	        }   		
+					
+			noOfGoals = noAchieved + noOnTrack + noOffTarget;//oRes.getSfobject().size();
+			
+			jo.put("count",    noOfGoals);		
+			jo.put("achieved", noAchieved);
+			jo.put("ontrack",  noAchieved);
+			jo.put("offtarget",noOffTarget);			
+			
+	
+		} catch (SFWebServiceFaultException_Exception e) {
+			// TODO Auto-generated catch block
+			LOG.error("Upsert error"); 
+			LOG.error("Exception:"+e.getMessage());
+			return Response.status(500).entity(e.getMessage()).build();		
+		}			
+		catch (Exception e){
+			LOG.error("Exc:"+e.getMessage());
+			e.printStackTrace();
+			return Response.status(500).entity(e.getMessage()).build();				
+		}
+				
+		
+		return Response.ok().entity(jo).build();	 	
+			
+	}	
 
 
 }
