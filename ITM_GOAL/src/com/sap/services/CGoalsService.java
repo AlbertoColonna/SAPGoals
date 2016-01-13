@@ -401,7 +401,7 @@ public class CGoalsService extends HttpServlet{
 			
 			jo.put("count",    noOfGoals);		
 			jo.put("achieved", noAchieved);
-			jo.put("ontrack",  noAchieved);
+			jo.put("ontrack",  noOnTrack);
 			jo.put("offtarget",noOffTarget);		
 			jo.put("nolongervalid",noLongerValid);				
 			
