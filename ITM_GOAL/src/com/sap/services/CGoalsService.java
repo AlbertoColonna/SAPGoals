@@ -31,6 +31,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.sap.coe.sf.InsertResult;
 import com.sap.coe.sf.QueryResult;
 import com.sap.coe.sf.SFWebServiceFaultException_Exception;
@@ -139,9 +140,9 @@ public class CGoalsService extends HttpServlet{
 		} catch (SFWebServiceFaultException_Exception e) {
 			// TODO Auto-generated catch block
 			LOG.error("Query error"); 
-			return null;
+			return null; 
 		}		
-	}
+	} 
 	
 	
 	@POST	
